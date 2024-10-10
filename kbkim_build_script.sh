@@ -1,0 +1,3 @@
+#!/bin/bash
+
+make -j 32 GGML_CUDA=1 GGML_CUDA_F16=1 GGML_CUDA_FORCE_MMQ=1
