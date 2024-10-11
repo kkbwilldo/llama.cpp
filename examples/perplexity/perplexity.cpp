@@ -18,6 +18,85 @@
 #pragma warning(disable: 4244 4267) // possible loss of data
 #endif
 
+// #######################################################
+const std::string KBKIM_MMLU_FEW_SHOT_PROMPT = R"(The following are questions testing knowledge in various fields. For each question, select the most appropriate answer.
+
+Question: Which of the following numbers is the largest?
+A) 0.75
+B) 3/4
+C) 0.8
+D) 7/9
+Answer: C
+
+Question: What is the largest planet in our solar system?
+A) Mars
+B) Jupiter
+C) Saturn
+D) Earth
+Answer: B
+
+Question: Who is the author of 'Brave New World'?
+A) George Orwell
+B) Aldous Huxley
+C) Ray Bradbury
+D) Franz Kafka
+Answer: B
+
+Question: Which of the following best describes the 'Law of Demand'?
+A) As price increases, quantity demanded increases
+B) As price increases, quantity demanded decreases
+C) Price and quantity demanded are unrelated
+D) Quantity demanded always remains constant
+Answer: B
+
+Question: Who discovered the double helix structure of DNA?
+A) Watson and Crick
+B) Einstein and Bohr
+C) The Curies
+D) Mendel and Darwin
+Answer: A
+
+Question: Which philosopher wrote 'A Letter Concerning Toleration'?
+A) John Locke
+B) Jean-Jacques Rousseau
+C) Thomas Hobbes
+D) René Descartes
+Answer: A
+
+Question: In the Pythagorean theorem, if c represents the hypotenuse and a and b the other two sides of a right triangle, which of the following is correct?
+A) a^2 + b^2 = c^2
+B) a + b = c
+C) a^2 - b^2 = c^2
+D) (a + b)^2 = c^2
+Answer: A
+
+Question: Which event directly triggered World War I?
+A) The Russian Revolution
+B) Assassination of Archduke Franz Ferdinand
+C) Signing of the Treaty of Versailles
+D) Hitler's rise to power with the Nazi Party
+Answer: B
+
+Question: In Shakespeare's play 'Hamlet', what is the meaning of the famous line "To be, or not to be"?
+A) Contemplation about love
+B) Determination for revenge
+C) Pondering the meaning of existence
+D) Desire for royal succession
+Answer: C
+
+Question: Which of the following is NOT a key feature of object-oriented programming?
+A) Encapsulation
+B) Inheritance
+C) Polymorphism
+D) Sequential execution
+Answer: D
+
+Using the examples above as a guide, please answer the following question:
+
+)";
+// #######################################################
+
+
 struct results_perplexity {
     std::vector<llama_token> tokens;
     double                   ppl_value;
@@ -1359,7 +1438,7 @@ static bool multiple_choice_prepare_one_task(llama_context * ctx, multiple_choic
             }
             return false;
         }
-        task.seq_tokens.emplace_back(::llama_tokenize(ctx, task.question + " " + answer, true));
+        task.seq_tokens.emplace_back(::llama_tokenize(ctx, KBKIM_MMLU_FEW_SHOT_PROMPT + task.question + " " + answer, true));
     }
     auto min_len = task.seq_tokens.front().size();
     for (auto& seq : task.seq_tokens) {
